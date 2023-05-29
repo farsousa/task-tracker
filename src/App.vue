@@ -1,47 +1,53 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+<template>
+  <section class="pagina">
+    <section class="menu">
+      <BarraLateral />
+    </section>
+    <section class="conteudo">
+      <div class="entrada-atividade">
+        <input type="text" placeholder="Qual tarefa você deseja iniciar?" />     
+        <CronometroComponente />
+      </div>
+    </section>    
+  </section>
+</template>
+<script>
+
+import { defineComponent } from 'vue'
+import BarraLateral from './components/BarraLateral.vue'
+import CronometroComponente from './components/CronometroComponente.vue'
+
+export default defineComponent ({
+  name: 'App',
+  components: {
+    BarraLateral,
+    CronometroComponente
+  }
+});
 </script>
 
-<template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
-  <main>
-    <TheWelcome />
-  </main>
-</template>
-
 <style scoped>
-header {
-  line-height: 1.5;
+.pagina {
+  display: flex;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+.menu {
+  width: 20%;
 }
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+.conteudo {
+  width: 80%;  
+  padding: 40px 0;
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+.entrada-atividade {
+  width: 400px;
+  margin: auto;
+}
+
+.entrada-atividade input {
+  width: 100%;
+  padding: 10px 20px;
 }
 </style>
