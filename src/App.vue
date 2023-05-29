@@ -4,24 +4,50 @@
       <BarraLateral />
     </section>
     <section class="conteudo">
-      <div class="entrada-atividade">
-        <input type="text" placeholder="Qual tarefa você deseja iniciar?" />     
-        <CronometroComponente />
+      <div class="entrada-tarefa">
+        <input type="text" placeholder="Qual tarefa você deseja iniciar?" v-model="tarefa.descricao" />     
+        <CronometroComponente :habilitarCronometragem="!tarefa.descricao" @acao="registrarTarefa" />
+      </div>
+      <div class="lista-tarefa">        
+        {{ tarefas }}
       </div>
     </section>    
   </section>
 </template>
-<script>
+<script lang="ts">
 
 import { defineComponent } from 'vue'
 import BarraLateral from './components/BarraLateral.vue'
 import CronometroComponente from './components/CronometroComponente.vue'
 
+type Tarefa = {
+  descricao: string;
+  duracao: string;
+}
 export default defineComponent ({
   name: 'App',
   components: {
     BarraLateral,
-    CronometroComponente
+    CronometroComponente,
+  },
+  data() {
+    return {     
+      tarefa: {} as Tarefa,
+      tarefas: [] as Tarefa[]
+    }
+  },
+  methods: {
+    registrarTarefa(tempoDecorrido: string) {
+      if(this.tarefa.descricao) {
+        this.tarefa.duracao = tempoDecorrido
+        this.tarefas.push(this.tarefa)
+        this.tarefa = {} as Tarefa 
+      }else {
+        alert("Preencha a tarefa executada!")
+      }
+      
+    }
+
   }
 });
 </script>
@@ -38,15 +64,15 @@ export default defineComponent ({
 .conteudo {
   width: 80%;  
   padding: 40px 0;
-
 }
 
-.entrada-atividade {
+.entrada-tarefa {
   width: 400px;
   margin: auto;
+  display: flex;
 }
 
-.entrada-atividade input {
+.entrada-tarefa input {
   width: 100%;
   padding: 10px 20px;
 }
