@@ -1,19 +1,15 @@
 <template>
   <div class="cronometro">
-    <div class="horario">
-        <strong >{{tempoDecorrido}}</strong>
-    </div>
-    <div class="acoes">
-      <button class="botao play" @click="iniciarCronometro()" :disabled="estaCronometroRodando || habilitarCronometragem" >
-        <span> play </span>
-      </button>
-      <button class="botao pause" @click="pausarCronometro()" :disabled="!estaCronometroRodando || habilitarCronometragem" >
-        <span> pause </span>
-      </button>
-      <button class="botao stop"  @click="finalizarCronometro();" :disabled="!cronometroIniciado && (!estaCronometroRodando || habilitarCronometragem)" >
-        <span> stop </span>
-      </button>
-    </div>
+    <strong >{{tempoDecorrido}}</strong>
+    <button class="play" @click="iniciarCronometro()" >
+      <span> PLAY </span>
+    </button>
+    <button class="pause" @click="pausarCronometro()" >
+      <span> PAUSE </span>
+    </button>
+    <button class="stop"  @click="finalizarCronometro();" >
+      <span> STOP </span>
+    </button>
   </div>
 </template>
 <script lang="ts">
@@ -45,24 +41,39 @@ export default defineComponent ({
     },
     methods: {
       iniciarCronometro(): void {
-        alert('iniciar cronogramas')
-        this.estaCronometroRodando = true
-        this.cronometro = setInterval(() => {
-          this.tempoEmSegundos += 1
-        }, 1000)        
+        if(this.estaCronometroRodando || this.habilitarCronometragem) {
+          alert('informe a tarefa')
+        }else {
+          alert('iniciar cronogramas')
+          this.estaCronometroRodando = true
+          this.cronometro = setInterval(() => {
+            this.tempoEmSegundos += 1
+          }, 1000)     
+          
+        }          
       },
       pausarCronometro(): void {
-        alert('pausar cronogramas')
-        clearInterval(this.cronometro)
-        this.estaCronometroRodando = false
+        if(!this.estaCronometroRodando || this.habilitarCronometragem) {
+          alert('Não pode pausar, já que nem começou a cronometragem')
+        } else {
+          alert('pausar cronogramas')
+          clearInterval(this.cronometro)
+          this.estaCronometroRodando = false          
+        }
+        
       },
       async finalizarCronometro(): Promise<void> {
-        await this.$emit('acao', this.tempoDecorrido)
-        alert('finalizar cronogramas')
-        this.tempoEmSegundos = 0
-        clearInterval(this.cronometro)
-        this.estaCronometroRodando = false
-        console.log(this.tempoDecorrido)
+        if(!this.cronometroIniciado && (!this.estaCronometroRodando || this.habilitarCronometragem)) {
+          alert('Não finalizado')
+        }else {
+          await this.$emit('acao', this.tempoDecorrido)
+          alert('finalizar cronogramas')
+          this.tempoEmSegundos = 0
+          clearInterval(this.cronometro)
+          this.estaCronometroRodando = false
+          console.log(this.tempoDecorrido)         
+        }
+        
       }
     }
 })
@@ -70,49 +81,51 @@ export default defineComponent ({
 
 <style scoped>
 .cronometro {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    max-width: 350px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: #c15c5c;
 }
 
-.botao {
-  border-radius: 4px;
-  border: 0;
-  box-shadow: 0px 0px 3px 0px;
-  height: 30px;
-  width: 90px;
+.cronometro strong {
+  font-size: 3em;
+  font-weight: 700;
   color: white;
-  margin: 10px ;
+}
+
+.cronometro span {
+  font-size: 3em;
+  font-weight: 700;
+}
+
+.cronometro button {
+  border-radius: 6px;
+  border: 0;
+  color: white;
+  width: 90%;
+  font-size: 0.4em;
+  margin: 10px 0;
+  padding: 10px 0;
+}
+
+.cronometro button:disabled {
+  background: #e3e3e3;
+  color: #000;
 }
 
 .play {
   background: #3c7b2f;
-}
-.play:disabled {
-  background: #e3e3e3;
-  
 }
 
 .pause {
   background: #f0ab51;
 }
 
-.pause:disabled {
-  background: #e3e3e3;
-  
-}
-
 .stop {
   background: #f42f17;
 }
 
-.stop:disabled {
-  background: #e3e3e3;
-  
-}
-.horario {
-  font-size: 2.5em;
-}
 </style>
