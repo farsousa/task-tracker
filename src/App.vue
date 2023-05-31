@@ -21,15 +21,13 @@
 import { defineComponent } from 'vue'
 import CronometroComponente from './components/CronometroComponente.vue'
 import TarefaComponente from './components/TarefaComponente.vue'
-import RodapeComponente from './components/RodapeComponente.vue'
-import ITarefa from './interfaces/ITarefa'
+import type ITarefa from './interfaces/ITarefa'
 
 export default defineComponent ({
   name: 'App',
   components: {
     CronometroComponente,
     TarefaComponente,
-    RodapeComponente,
   },
   data() {
     return {     
