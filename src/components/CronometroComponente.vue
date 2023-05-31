@@ -12,7 +12,6 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
-import 'material-design-icons/iconfont/material-icons.css';
 
 export default defineComponent ({
     name: 'CronometroComponente',
