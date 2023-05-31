@@ -1,14 +1,19 @@
 <template>
   <section class="pagina">
     <div class="temporizador">
-      <input class="entrada-tarefa" type="text" placeholder="Qual tarefa você deseja iniciar?" v-model="tarefa.descricao" />     
-      <CronometroComponente :habilitarCronometragem="!tarefa.descricao" @acao="registrarTarefa" />
+      <input class="entrada-tarefa" type="text" placeholder="Qual tarefa você deseja cronometrar?" v-model="tarefa.descricao" />     
+      <CronometroComponente :estaPermitidoCronometragem="!tarefa.descricao" @acao="registrarTarefa" />
     </div>
     
-    <div class="tarefas">
-      <h1>Tarefas</h1>
-      <TarefaComponente v-for="(tarefa, index) in tarefas" :key="index" :descricao="tarefa.descricao" :duracao="tarefa.duracao" />
-    </div>    
+    <div class="historico-tarefas">
+      <h1>Histórico de Tarefas</h1>
+      <i v-if="tarefas.length === 0">Você ainda não tem tarefas cronometradas...</i>
+      <div v-for="(tarefa, index) in tarefas" :key="index">
+        <p v-if="index === 0">{{ tarefa.data }}</p>
+        <p v-if="index > 0 && tarefas[index - 1].data !== tarefa.data">{{ tarefa.data }}</p>
+        <TarefaComponente  :descricao="tarefa.descricao" :duracao="tarefa.duracao" />
+      </div>     
+    </div> 
   </section>
 </template>
 <script lang="ts">
@@ -16,6 +21,7 @@
 import { defineComponent } from 'vue'
 import CronometroComponente from './components/CronometroComponente.vue'
 import TarefaComponente from './components/TarefaComponente.vue'
+import RodapeComponente from './components/RodapeComponente.vue'
 import ITarefa from './interfaces/ITarefa'
 
 export default defineComponent ({
@@ -23,6 +29,7 @@ export default defineComponent ({
   components: {
     CronometroComponente,
     TarefaComponente,
+    RodapeComponente,
   },
   data() {
     return {     
@@ -34,12 +41,21 @@ export default defineComponent ({
     registrarTarefa(tempoDecorrido: string) {
       if(this.tarefa.descricao) {
         this.tarefa.duracao = tempoDecorrido
+        this.tarefa.data = new Date().toLocaleString().substring(0,10)
         this.tarefas.push(this.tarefa)
         this.tarefa = {} as ITarefa 
       }else {
         alert("Preencha a tarefa executada!")
-      }
-      
+      }      
+    },
+    gerarNumeroAleatorio(min: number, max: number) {
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    },
+    gerarDataAleatoria() {
+      const ano = this.gerarNumeroAleatorio(2000, new Date().getFullYear());
+      const mes = this.gerarNumeroAleatorio(0, 11);
+      const dia = this.gerarNumeroAleatorio(1, new Date(ano, mes + 1, 0).getDate());
+      return new Date(ano, mes, dia);
     }
 
   }
@@ -52,8 +68,10 @@ export default defineComponent ({
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #ffffff;
   height: 100vh;
+  max-width: 600px;
+  margin: auto;
+  background-color: rgb(249, 249, 249);  
 }
 .entrada-tarefa {
   width: 100%;
@@ -61,12 +79,35 @@ export default defineComponent ({
   margin: 10px 0;
 }
 
-.temporizador, .tarefas {
+.temporizador, .historico-tarefas {
   padding: 0 20px;
   width: 100%;
 }
 
-.tarefas h1 {
-  text-align: center;
+.temporizador input {  
+  outline: none;
+  border: none;
+  border-left: 6px solid black;
+  background-color: #fff;
+  height: 60px;
+  font-size: 1em;
 }
+
+.temporizador input:focus {  
+    outline: none;
+    border: none;
+    border-left: 6px solid black;
+}
+
+.historico-tarefas h1 {
+  font-size: 1.9em;
+  margin-top: 30px;
+  font-weight: 700;
+}
+
+.historico-tarefas p {
+  text-align: center;
+  margin-top: 20px;
+}
+
 </style>

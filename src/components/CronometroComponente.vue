@@ -1,24 +1,23 @@
 <template>
   <div class="cronometro">
-    <strong >{{tempoDecorrido}}</strong>
-    <button class="play" @click="iniciarCronometro()" >
-      <span> PLAY </span>
-    </button>
-    <button class="pause" @click="pausarCronometro()" >
-      <span> PAUSE </span>
-    </button>
-    <button class="stop"  @click="finalizarCronometro();" >
-      <span> STOP </span>
-    </button>
+    <div class="tempo">
+      <strong >{{tempoDecorrido}}</strong>
+    </div>    
+    <div class="acoes">      
+      <i class="material-icons play" v-show="!estaRodandoCronometro" @click="iniciarCronometro()">play_arrow</i>
+      <i class="material-icons pause" v-show="estaRodandoCronometro"  @click="pausarCronometro()">pause</i>
+      <i class="material-icons stop" v-show="foiIniciadoCronometro" @click="finalizarCronometro();">stop</i>
+    </div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
+import 'material-design-icons/iconfont/material-icons.css';
 
 export default defineComponent ({
     name: 'CronometroComponente',
     props: {
-      habilitarCronometragem: {
+      estaPermitidoCronometragem: {
         type: Boolean,
         required: false,
         default: true
@@ -28,24 +27,23 @@ export default defineComponent ({
       return {
         tempoEmSegundos: 0 as number, 
         cronometro: 0 as any,
-        estaCronometroRodando: false as boolean,
+        estaRodandoCronometro: false as boolean,
       }
     },
     computed: {
       tempoDecorrido(): string {
         return new Date(this.tempoEmSegundos * 1000).toISOString().substring(11, 19)
       },
-      cronometroIniciado(): boolean {
-        return this.tempoEmSegundos >= 1
+      foiIniciadoCronometro(): boolean {
+        return this.tempoEmSegundos > 0
       }
     },
     methods: {
       iniciarCronometro(): void {
-        if(this.estaCronometroRodando || this.habilitarCronometragem) {
+        if(this.estaRodandoCronometro || this.estaPermitidoCronometragem) {
           alert('informe a tarefa')
         }else {
-          alert('iniciar cronogramas')
-          this.estaCronometroRodando = true
+          this.estaRodandoCronometro = true
           this.cronometro = setInterval(() => {
             this.tempoEmSegundos += 1
           }, 1000)     
@@ -53,24 +51,22 @@ export default defineComponent ({
         }          
       },
       pausarCronometro(): void {
-        if(!this.estaCronometroRodando || this.habilitarCronometragem) {
-          alert('Não pode pausar, já que nem começou a cronometragem')
+        if(!this.estaRodandoCronometro || this.estaPermitidoCronometragem) {
+          
         } else {
-          alert('pausar cronogramas')
           clearInterval(this.cronometro)
-          this.estaCronometroRodando = false          
+          this.estaRodandoCronometro = false          
         }
         
       },
       async finalizarCronometro(): Promise<void> {
-        if(!this.cronometroIniciado && (!this.estaCronometroRodando || this.habilitarCronometragem)) {
-          alert('Não finalizado')
+        if(!this.foiIniciadoCronometro && (!this.estaRodandoCronometro || this.estaPermitidoCronometragem)) {
+         
         }else {
           await this.$emit('acao', this.tempoDecorrido)
-          alert('finalizar cronogramas')
           this.tempoEmSegundos = 0
           clearInterval(this.cronometro)
-          this.estaCronometroRodando = false
+          this.estaRodandoCronometro = false
           console.log(this.tempoDecorrido)         
         }
         
@@ -87,18 +83,26 @@ export default defineComponent ({
   justify-content: center;
   align-items: center;
   width: 100%;
-  background-color: #c15c5c;
 }
 
-.cronometro strong {
+.cronometro .tempo strong {
   font-size: 3em;
   font-weight: 700;
-  color: white;
+  color: #000000;
 }
 
-.cronometro span {
+.cronometro .acoes {
+  display: flex;
+  width: 100%;
+}
+
+.cronometro .acoes i {
   font-size: 3em;
   font-weight: 700;
+  color: #ffffff;
+  flex-grow: 1;
+  text-align: center;
+  cursor: pointer;
 }
 
 .cronometro button {
@@ -120,12 +124,24 @@ export default defineComponent ({
   background: #3c7b2f;
 }
 
+.play:hover {
+  background: #2c5b22;
+}
+
 .pause {
   background: #f0ab51;
 }
 
+.pause:hover {
+  background: #c48c42;
+}
+
 .stop {
   background: #f42f17;
+}
+
+.stop:hover {
+  background: #a62110;
 }
 
 </style>

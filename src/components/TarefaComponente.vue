@@ -1,7 +1,10 @@
 <template>
     <div class="tarefa">
-        <h2> {{ descricao }} </h2>
-        <p> {{ duracao }} </p>
+        <h2> {{ descricao }}  </h2>
+        <p> 
+            <i class="material-icons">access_time</i>
+            <span>{{ duracao }} </span>            
+        </p>
     </div>
 </template>
 
@@ -30,16 +33,22 @@ export default defineComponent ({
     width: 100%;
     padding: 5px 20px;
     margin: 10px 0;
-    background-color: #f3f3f3;
-    border-left: 8px solid black;
+    background-color: #ffffff;
+    border-left: 6px solid black;
 }
 
 h2 {
     font-weight: bold;
+    font-size: 1.1em;
 }
 
 p {
     font-size: 14px;
+    display: flex;
+}
+
+p span {
+    margin-left: 10px;
 }
 
 </style>
